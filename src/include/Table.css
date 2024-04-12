@@ -1,0 +1,22 @@
+/* Стили для таблички расчёта БЖУ */
+table {
+    font-weight: 500;
+    font-style: normal;
+    font-size: 32px;
+    width: 50%;
+    letter-spacing: -3.8;
+    border-color:rgb(255, 255, 255);
+  }
+  
+  th {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgb(175, 182, 187);
+    padding: 10px 20px;
+    text-align: center;
+  }
+    
+    
+  td {
+    background: rgba(12, 83, 52, 0.225);
+    padding: 10px 20px;
+  }

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { App } from './App';
-import { GlobalStyle } from './GlobalStyle.tsx';
+import { GlobalStyle } from './include/GlobalStyle.tsx';
 
 // Типографика, имеющая размеры, зависимые от типа устройства
 import { DeviceThemeProvider } from '@salutejs/plasma-ui/components/Device';
