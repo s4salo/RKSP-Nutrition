@@ -1,6 +1,9 @@
 import React from "react";
 import {createAssistant, createSmartappDebugger,} from "@salutejs/client";
 import axios from "axios";
+import './App.css'
+import './include/InputField.css'
+import { MakeTable } from "./include/MakeTable";
 
 const initializeAssistant = (getState) => {
   if (process.env.NODE_ENV === "development") {
@@ -21,6 +24,7 @@ export class App extends React.Component {
 
     this.state = {
       productInfo: null, 
+      productName: ''
     };
 
     this.assistant = initializeAssistant(() => {});
@@ -80,38 +84,76 @@ export class App extends React.Component {
     return state;  
   }
 
+  onProductNameSubmit = event =>{
+    event.preventDefault();
+    console.log(this.state.productName);
+    this.fetchProductInfo(this.state.productName);
+    console.log(this.state.productInfo);
+    this.setState({
+      productInfo : null
+    })
+  }
+
+  onProductNameChange = event =>{
+    this.setState({
+        productName: event.target.value,
+    });
+        console.log(this.state.productName);
+    }
+
+
+  // Функция поиска значения некоторой характеристики продукта
+  findValue(id){
+    const len = this.state.productInfo.foodNutrients.length;
+    for (let i = 0; i < len; i++){
+      if (this.state.productInfo.foodNutrients[i].nutrientId == id){
+        return this.state.productInfo.foodNutrients[i].value;
+      }
+    }
+    return -1;
+  }
+
   render() {
-    const { productInfo } = this.state;
-    const nutrientIds = {
-      protein: 1003,
-      fat: 1004,
-      carbohydrates: 1005,
-      calories: 1008,
-    };
+    if (this.state.productInfo){
+      const nutrientIds = {
+        protein: 1003,
+        fat: 1004,
+        carbohydrates: 1005,
+        calories: 1008
+      }
+
+      let protein_ = this.findValue(nutrientIds.protein);
+      let fat_ = this.findValue(nutrientIds.fat);
+      let carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
+      let calories_ = this.findValue(nutrientIds.calories);
+
+
+      return (
+        <div className="App">
+          <div class="m-auto">
+            <form onSubmit={this.onProductNameSubmit}>
+              <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange}></input>
+            </form>
+          </div>
+          <br></br>
+          <div class="m-auto">
+            <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />;
+          </div>
+        </div>
+      );
+    }
 
     return (
-      <div>
-        {productInfo ? (
-          <div>
-            <h2>Информация о продукте: {productInfo.description}</h2>
-            {productInfo.foodNutrients.map((nutrient) => {
-              const nutrientNameMap = {
-                [nutrientIds.protein]: 'Белки',
-                [nutrientIds.fat]: 'Жиры',
-                [nutrientIds.carbohydrates]: 'Углеводы',
-                [nutrientIds.calories]: 'Калории',
-              };
-
-              const nutrientValue = nutrientNameMap[nutrient.nutrientId] ?
-                (<p key={nutrient.nutrientId}>{nutrientNameMap[nutrient.nutrientId]}: {nutrient.value} {nutrient.unitName}</p>) :
-                null;
-
-              return nutrientValue;
-            })}
-          </div>
-        ) : (
-          <p>Информации о продукте нет</p>
-        )}
+      <div className="App">
+        <div class="m-auto">
+          <form onSubmit={this.onProductNameSubmit}>
+            <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange}></input>
+          </form>
+        </div>
+        <br />
+        <div class="m-auto">
+          <MakeTable protein={'-'} fat={'-'} carbohydrates={'-'} calories={'-'} />
+        </div>
       </div>
     );
   }
