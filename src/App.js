@@ -5,6 +5,17 @@ import './App.css'
 import './include/InputField.css'
 import { MakeTable } from "./include/MakeTable";
 
+//Временные импорты
+import { Button, TextField } from '@salutejs/plasma-ui';
+import { Container } from '@salutejs/plasma-ui/components/Grid';
+import { darkJoy, darkEva, darkSber } from '@salutejs/plasma-tokens/themes';
+import { text, background, gradient } from '@salutejs/plasma-tokens';
+import { createGlobalStyle } from 'styled-components';
+const ThemeBackgroundEva = createGlobalStyle(darkEva);
+const ThemeBackgroundSber = createGlobalStyle(darkSber);
+const ThemeBackgroundJoy = createGlobalStyle(darkJoy);
+//
+
 const initializeAssistant = (getState) => {
   if (process.env.NODE_ENV === "development") {
     console.log("Дев мод")
@@ -17,6 +28,8 @@ const initializeAssistant = (getState) => {
   return createAssistant({getState});
 };
 
+
+//Вот тут измененения в состоянии, чтобы ассистента менять
 export class App extends React.Component {
   constructor(props) {
     super(props);
@@ -24,7 +37,9 @@ export class App extends React.Component {
 
     this.state = {
       productInfo: null, 
-      productName: ''
+      productName: '',
+      //мяу
+      character: 'sber'
     };
 
     this.assistant = initializeAssistant(() => {});
@@ -33,12 +48,19 @@ export class App extends React.Component {
       console.log(`assistant.on(data)`, event);
       if (event.type === "character") {
         console.log(`assistant.on(data): character: "${event?.character?.id}"`);
+        //Гав
+        this.setState({character: event.character.id})
       } else if (event.type === "insets") {
         console.log(`assistant.on(data): insets`);
       } else if (event.type === "smart_app_data") {
+
         const {action} = event;
-        console.log(action.product)
+      //Тут какие то системные прилетали и  я вот так решила
+        if (action){
+          console.log(action.product)
         this.dispatchAssistantAction(action.product);
+        }
+        
       }
       else{
         console.log("Что ты такое")
@@ -71,10 +93,18 @@ export class App extends React.Component {
     }
   };
 
+  
   async dispatchAssistantAction(action) {
-    const actionENG = await this.translateText(action);
-    this.fetchProductInfo(actionENG);
-    console.log(actionENG);
+    // const actionENG = await this.translateText(action);
+    // this.fetchProductInfo(actionENG);
+    // console.log(actionENG);
+    this.queryBackend(action);
+  }
+
+  async queryBackend(productName) {
+    const productNameEn = await this.translateText(productName);
+    console.log('productNameEn:',productNameEn);
+    this.fetchProductInfo(productNameEn);
   }
 
   getStateForAssistant() {
@@ -114,6 +144,19 @@ export class App extends React.Component {
   }
 
   render() {
+    const { theme, character, productInfo } = this.state;
+    {(() => {
+      switch (character) {
+          case 'sber':
+              return <ThemeBackgroundSber />;
+          case 'eva':
+              return <ThemeBackgroundEva />;
+          case 'joy':
+              return <ThemeBackgroundJoy />;
+          default:
+              return;
+      }
+  })()}
     if (this.state.productInfo){
       const nutrientIds = {
         protein: 1003,
@@ -129,7 +172,8 @@ export class App extends React.Component {
 
 
       return (
-        <div className="App">
+
+        <div className="App">        
           <div class="m-auto">
             <form onSubmit={this.onProductNameSubmit}>
               <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange}></input>
@@ -146,16 +190,36 @@ export class App extends React.Component {
     return (
       <div className="App">
         <div class="m-auto">
-          <form onSubmit={this.onProductNameSubmit}>
-            <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange}></input>
+
+          <form onSubmit={(event) => {
+            //event.preventDefault(); 
+            this.queryBackend(this.state.productName); 
+          }}>
+            <input
+              type="text"
+              className="write-product"
+              id="input-field"
+              placeholder="Введите текст"
+              value={this.state.productName}
+              onChange={(event) => {
+                this.setState({ productName: event.target.value })
+              }}
+            />
           </form>
+          <Button onClick={() => {
+            console.log('btn')
+            this.queryBackend(this.state.productName)
+          }}>Найти продукт</Button>
         </div>
         <br />
         <div class="m-auto">
           <MakeTable protein={'-'} fat={'-'} carbohydrates={'-'} calories={'-'} />
         </div>
+        
       </div>
+      
     );
+
   }
 }
 
