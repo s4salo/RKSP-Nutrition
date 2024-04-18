@@ -90,7 +90,7 @@ export class App extends React.Component {
 
     const translatedProductName = await this.translateText(this.state.productName);
     console.log(translatedProductName);
-    
+
     this.fetchProductInfo(translatedProductName);
     console.log(this.state.productInfo);
     this.setState({
@@ -107,14 +107,19 @@ export class App extends React.Component {
 
 
   // Функция поиска значения некоторой характеристики продукта
-  findValue(id){
+  findValue = id =>{
     const len = this.state.productInfo.foodNutrients.length;
+    const unitNameMap = {
+      "G" : "гр.",
+      "MG": "мг.",
+      "KCAL": "ккал."
+    }
     for (let i = 0; i < len; i++){
       if (this.state.productInfo.foodNutrients[i].nutrientId == id){
-        return this.state.productInfo.foodNutrients[i].value;
+        return [this.state.productInfo.foodNutrients[i].value, unitNameMap[this.state.productInfo.foodNutrients[i].unitName]];
       }
     }
-    return -1;
+    return [-1, ''];
   }
 
   render() {
@@ -141,7 +146,7 @@ export class App extends React.Component {
           </div>
           <br></br>
           <div class="m-auto">
-            <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />;
+            <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />
           </div>
         </div>
       );
@@ -156,7 +161,7 @@ export class App extends React.Component {
         </div>
         <br />
         <div class="m-auto">
-          <MakeTable protein={'-'} fat={'-'} carbohydrates={'-'} calories={'-'} />
+          <MakeTable protein={['-', '']} fat={['-', '']} carbohydrates={['-', '']} calories={['-', '']} />
         </div>
       </div>
     );
