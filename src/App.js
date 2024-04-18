@@ -84,10 +84,14 @@ export class App extends React.Component {
     return state;  
   }
 
-  onProductNameSubmit = event =>{
+  onProductNameSubmit = async event =>{
     event.preventDefault();
     console.log(this.state.productName);
-    this.fetchProductInfo(this.state.productName);
+
+    const translatedProductName = await this.translateText(this.state.productName);
+    console.log(translatedProductName);
+    
+    this.fetchProductInfo(translatedProductName);
     console.log(this.state.productInfo);
     this.setState({
       productInfo : null
