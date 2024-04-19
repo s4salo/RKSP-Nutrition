@@ -144,19 +144,19 @@ export class App extends React.Component {
   }
 
   render() {
-    const { theme, character, productInfo } = this.state;
-    {(() => {
-      switch (character) {
-          case 'sber':
-              return <ThemeBackgroundSber />;
-          case 'eva':
-              return <ThemeBackgroundEva />;
-          case 'joy':
-              return <ThemeBackgroundJoy />;
-          default:
-              return;
-      }
-  })()}
+  const { theme, character, productInfo } = this.state;
+  //   {(() => {
+  //     switch (character) {
+  //         case 'sber':
+  //             return <ThemeBackgroundSber />;
+  //         case 'eva':
+  //             return <ThemeBackgroundEva />;
+  //         case 'joy':
+  //             return <ThemeBackgroundJoy />;
+  //         default:
+  //             return;
+  //     }
+  // })()}
     if (this.state.productInfo){
       const nutrientIds = {
         protein: 1003,
