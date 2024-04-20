@@ -24,3 +24,7 @@
     border-radius: 64px;
     border-color: #ffffff;
   }
+
+  .write-product.mistake {
+    color:red
+  }
