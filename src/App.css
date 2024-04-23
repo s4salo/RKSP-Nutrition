@@ -24,3 +24,7 @@
 .m-auto {
   margin: 0 auto;
 }
+
+.write-product::placeholder {
+  opacity: 50%;
+}

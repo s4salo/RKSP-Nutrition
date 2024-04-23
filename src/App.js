@@ -146,7 +146,7 @@ export class App extends React.Component {
       <div className="App">
         <div class="m-auto">
           <form onSubmit={this.onProductNameSubmit}>
-            <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange} pattern="[a-zA-Zа-яА-Я]*" title="Допустимы только символы латиницы и кириллицы."></input>
+            <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange} pattern="[a-zA-Zа-яА-Я ]*" title="Допустимы только символы латиницы и кириллицы." placeholder="Наименование продукта"></input>
           </form>
         </div>
         <br></br>
