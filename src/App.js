@@ -23,9 +23,11 @@ export class App extends React.Component {
     console.log('constructor');
 
     this.state = {
-      productInfo: null, 
-      productName: ''
+      productInfo: null
     };
+
+    this.productName = '';
+    this.justOpened = true;
 
     this.assistant = initializeAssistant(() => {});
 
@@ -72,9 +74,10 @@ export class App extends React.Component {
   };
 
   async dispatchAssistantAction(action) {
+    this.productName = action;
     const actionENG = await this.translateText(action);
     this.fetchProductInfo(actionENG);
-    console.log(actionENG);
+    console.log(action);
   }
 
   getStateForAssistant() {
@@ -86,9 +89,9 @@ export class App extends React.Component {
 
   onProductNameSubmit = async event =>{
     event.preventDefault();
-    console.log(this.state.productName);
+    console.log(this.productName);
 
-    const translatedProductName = await this.translateText(this.state.productName);
+    const translatedProductName = await this.translateText(this.productName);
     console.log(translatedProductName);
 
     this.fetchProductInfo(translatedProductName);
@@ -99,11 +102,10 @@ export class App extends React.Component {
   }
 
   onProductNameChange = event =>{
-    this.setState({
-        productName: event.target.value,
-    });
-        console.log(this.state.productName);
-    }
+    this.productName = event.target.value
+    this.productName = this.productName.toLowerCase();
+    console.log(this.productName);
+  }
 
 
   // Функция поиска значения некоторой характеристики продукта
@@ -135,11 +137,21 @@ export class App extends React.Component {
     let carbohydrates_ = ['-', ''];
     let calories_ = ['-', ''];
 
+    let information_string = "Информация о продукте не найдена"
+
+    if (this.justOpened){
+      information_string = '';
+    }
+
     if (this.state.productInfo){
       protein_ = this.findValue(nutrientIds.protein);
       fat_ = this.findValue(nutrientIds.fat);
       carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
       calories_ = this.findValue(nutrientIds.calories);
+      
+
+      information_string = `Информация о продукте «${this.productName}»:`
+      this.justOpened = false;
     }
 
     return (
@@ -150,6 +162,9 @@ export class App extends React.Component {
           </form>
         </div>
         <br></br>
+        <div class="m-auto">
+          <h2>{information_string}</h2>
+        </div>
         <div class="m-auto">
           <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />
         </div>
