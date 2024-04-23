@@ -123,48 +123,38 @@ export class App extends React.Component {
   }
 
   render() {
+    const nutrientIds = {
+      protein: 1003,
+      fat: 1004,
+      carbohydrates: 1005,
+      calories: 1008
+    }
+
+    let protein_ = ['-', ''];
+    let fat_ = ['-', ''];
+    let carbohydrates_ = ['-', ''];
+    let calories_ = ['-', ''];
+
     if (this.state.productInfo){
-      const nutrientIds = {
-        protein: 1003,
-        fat: 1004,
-        carbohydrates: 1005,
-        calories: 1008
-      }
-
-      let protein_ = this.findValue(nutrientIds.protein);
-      let fat_ = this.findValue(nutrientIds.fat);
-      let carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
-      let calories_ = this.findValue(nutrientIds.calories);
-
-
-      return (
-        <div className="App">
-          <div class="m-auto">
-            <form onSubmit={this.onProductNameSubmit}>
-              <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange}></input>
-            </form>
-          </div>
-          <br></br>
-          <div class="m-auto">
-            <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />
-          </div>
-        </div>
-      );
+      protein_ = this.findValue(nutrientIds.protein);
+      fat_ = this.findValue(nutrientIds.fat);
+      carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
+      calories_ = this.findValue(nutrientIds.calories);
     }
 
     return (
       <div className="App">
         <div class="m-auto">
           <form onSubmit={this.onProductNameSubmit}>
-            <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange}></input>
+            <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange} pattern="[a-zA-Zа-яА-Я]*" title="Допустимы только символы латиницы и кириллицы."></input>
           </form>
         </div>
-        <br />
+        <br></br>
         <div class="m-auto">
-          <MakeTable protein={['-', '']} fat={['-', '']} carbohydrates={['-', '']} calories={['-', '']} />
+          <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />
         </div>
       </div>
-    );
+      );
   }
 }
 
