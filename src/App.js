@@ -195,9 +195,15 @@ export class App extends React.Component {
             placeholder="Наименование продукта">
 
             </input>
-          
+            {/* <Button onClick = {this.onProductNameSubmit}  
+            size = "l"
+            pin = "circle-circle"
+            >Боб</Button> */}
           </form>
-        <Button onClick = {this.onProductNameSubmit}> Найти продукт</Button>
+          <Button onClick = {this.onProductNameSubmit}  
+            size = "l"
+            pin = "circle-circle"
+            >Найти продукт</Button>
 
         </div>
         <br></br>
