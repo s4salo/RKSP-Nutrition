@@ -110,9 +110,19 @@ export class App extends React.Component {
     })
   }
 
+  capitalizeName = (text) => {
+    const temp = text.split(" ");
+    for (let i = 0; i < temp.length; i++) {
+      console.log(temp);
+      temp[i] = temp[i][0].toUpperCase() + temp[i].substr(1);
+    }
+    return temp.join(" ");
+  }
+
   onProductNameChange = event =>{
     this.productName = event.target.value
     this.productName = this.productName.toLowerCase();
+    ///this.productName = this.capitalizeName(this.productName);
     console.log(this.productName);
   }
 
@@ -167,7 +177,7 @@ export class App extends React.Component {
       calories_ = this.findValue(nutrientIds.calories);
       
 
-      information_string = `Информация о продукте «${this.productName}»:`
+      information_string = `Информация о продукте «${this.capitalizeName(this.productName)}»:`
       this.justOpened = false;
     }
 
@@ -176,9 +186,19 @@ export class App extends React.Component {
         <div class="m-auto">
           <form onSubmit={this.onProductNameSubmit}>
             
-            <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange} pattern="[a-zA-Zа-яА-Я ]*" title="Допустимы только символы латиницы и кириллицы." placeholder="Наименование продукта"></input>
+            <input type="text" 
+            class="write-product" 
+            id="input-field" 
+            onChange={this.onProductNameChange} 
+            pattern="[a-zA-Zа-яА-Я ]*" 
+            title="Допустимы только символы латиницы и кириллицы." 
+            placeholder="Наименование продукта">
+
+            </input>
           
           </form>
+        <Button onClick = {this.onProductNameSubmit}> Найти продукт</Button>
+
         </div>
         <br></br>
         <div class="m-auto">
