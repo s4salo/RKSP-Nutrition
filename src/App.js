@@ -4,6 +4,7 @@ import axios from "axios";
 import './App.css'
 import './include/InputField.css'
 import { MakeTable } from "./include/MakeTable";
+import { Button, TextField } from '@salutejs/plasma-ui';
 
 const initializeAssistant = (getState) => {
   if (process.env.NODE_ENV === "development") {
@@ -39,8 +40,10 @@ export class App extends React.Component {
         console.log(`assistant.on(data): insets`);
       } else if (event.type === "smart_app_data") {
         const {action} = event;
-        console.log(action.product)
-        this.dispatchAssistantAction(action.product);
+        if (action) {
+          console.log(action.product)
+          this.dispatchAssistantAction(action.product);
+        }
       }
       else{
         console.log("Что ты такое")
@@ -74,12 +77,18 @@ export class App extends React.Component {
   };
 
   async dispatchAssistantAction(action) {
-    this.productName = action;
-    const actionENG = await this.translateText(action);
-    this.fetchProductInfo(actionENG);
-    console.log(action);
+    // const actionENG = await this.translateText(action);
+    // this.fetchProductInfo(actionENG);
+    // console.log(actionENG);
+    this.queryBackend(action);
   }
 
+  async queryBackend(productName) {
+    const productNameEn = await this.translateText(productName);
+   // this.fillDisplayedName(productName);
+    console.log('productNameEn:', productNameEn);
+    this.fetchProductInfo(productNameEn);
+  }
   getStateForAssistant() {
       const state = {
       productInfo: this.state.productInfo,      
@@ -121,10 +130,18 @@ export class App extends React.Component {
         return [this.state.productInfo.foodNutrients[i].value, unitNameMap[this.state.productInfo.foodNutrients[i].unitName]];
       }
     }
-    return [-1, ''];
+    return ['-', ''];
   }
 
   render() {
+
+    const SearchButton = () => (
+      <Button onClick={() => {
+        this.queryBackend(this.state.productName);
+        //this.clearProductName();
+      }}>Найти продукт</Button>
+      
+    )
     const nutrientIds = {
       protein: 1003,
       fat: 1004,
@@ -158,7 +175,9 @@ export class App extends React.Component {
       <div className="App">
         <div class="m-auto">
           <form onSubmit={this.onProductNameSubmit}>
+            
             <input type="text" class="write-product" id="input-field" onChange={this.onProductNameChange} pattern="[a-zA-Zа-яА-Я ]*" title="Допустимы только символы латиницы и кириллицы." placeholder="Наименование продукта"></input>
+          
           </form>
         </div>
         <br></br>
