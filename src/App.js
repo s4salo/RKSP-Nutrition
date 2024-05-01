@@ -24,10 +24,11 @@ export class App extends React.Component {
     console.log('constructor');
 
     this.state = {
-      productInfo: null
+      productInfo: null,
+      productName: '', 
+      inputValue : '',
     };
 
-    this.productName = '';
     this.justOpened = true;
 
     this.assistant = initializeAssistant(() => {});
@@ -39,14 +40,12 @@ export class App extends React.Component {
       } else if (event.type === "insets") {
         console.log(`assistant.on(data): insets`);
       } else if (event.type === "smart_app_data") {
-        const {action} = event;
-        if (action) {
-          console.log(action.product)
+        const { action } = event;
+        if (action && action.product) {
+          console.log(action.product);
           this.dispatchAssistantAction(action.product);
+          this.setState({ productName: action.product }); // Обновляем состояние с именем продукта
         }
-      }
-      else{
-        console.log("Что ты такое")
       }
     });
 
@@ -69,7 +68,7 @@ export class App extends React.Component {
       const response = await axios.get(`http://localhost:3001/product-info/${productName}`);
       if (response.data && response.data.foods && response.data.foods.length > 0) {
         const productInfo = response.data.foods[0];
-        this.setState({ productInfo: productInfo });
+        this.setState({ productInfo: productInfo});
       }
     } catch(error) {
       console.error('Ошибка запроса к серверу:', error);
@@ -85,45 +84,37 @@ export class App extends React.Component {
 
   async queryBackend(productName) {
     const productNameEn = await this.translateText(productName);
-   // this.fillDisplayedName(productName);
+    // this.fillDisplayedName(productName);
     console.log('productNameEn:', productNameEn);
     this.fetchProductInfo(productNameEn);
   }
   getStateForAssistant() {
-      const state = {
+    const state = {
       productInfo: this.state.productInfo,      
     };
     return state;  
   }
 
-  onProductNameSubmit = async event =>{
+  onProductNameSubmit = async (event) =>{
     event.preventDefault();
-    console.log(this.productName);
-
-    const translatedProductName = await this.translateText(this.productName);
+    await this.setState({productName: this.state.inputValue.toLowerCase()});
+    
+    const translatedProductName = await this.translateText(this.state.productName);
     console.log(translatedProductName);
 
     this.fetchProductInfo(translatedProductName);
-    console.log(this.state.productInfo);
-    this.setState({
-      productInfo : null
-    })
   }
 
   capitalizeName = (text) => {
     const temp = text.split(" ");
     for (let i = 0; i < temp.length; i++) {
-      console.log(temp);
       temp[i] = temp[i][0].toUpperCase() + temp[i].substr(1);
     }
     return temp.join(" ");
   }
 
-  onProductNameChange = event =>{
-    this.productName = event.target.value
-    this.productName = this.productName.toLowerCase();
-    ///this.productName = this.capitalizeName(this.productName);
-    console.log(this.productName);
+  onProductNameChange = event => {
+    this.setState({inputValue: event.target.value.toLowerCase()});
   }
 
 
@@ -145,13 +136,6 @@ export class App extends React.Component {
 
   render() {
 
-    const SearchButton = () => (
-      <Button onClick={() => {
-        this.queryBackend(this.state.productName);
-        //this.clearProductName();
-      }}>Найти продукт</Button>
-      
-    )
     const nutrientIds = {
       protein: 1003,
       fat: 1004,
@@ -177,7 +161,7 @@ export class App extends React.Component {
       calories_ = this.findValue(nutrientIds.calories);
       
 
-      information_string = `Информация о продукте «${this.capitalizeName(this.productName)}»:`
+      information_string = `Информация о продукте «${this.capitalizeName(this.state.productName)}»:`
       this.justOpened = false;
     }
 
@@ -189,7 +173,7 @@ export class App extends React.Component {
             <input type="text" 
             class="write-product" 
             id="input-field" 
-            onChange={this.onProductNameChange} 
+            onChange={this.onProductNameChange}
             pattern="[a-zA-Zа-яА-Я ]*" 
             title="Допустимы только символы латиницы и кириллицы." 
             placeholder="Наименование продукта">

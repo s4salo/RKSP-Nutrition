@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@salutejs/client": "^1.18.0",
+    "@salutejs/plasma-tokens": "^1.80.0",
+    "@salutejs/plasma-ui": "^1.247.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
