@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js"
+    "start": "node ./index.js",
+    "build": "cd ../frontend && npm run build"
   },
-  "proxy": "http://localhost:3001",
+  "proxy": "http://45.67.57.139:3001",
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -1,8 +1,11 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.use(cors());
 app.use(express.json()); // для обработки JSON тела запроса
@@ -48,6 +51,10 @@ app.get('/product-info/:productName', async (req, res) => {
     console.error(error);
     res.status(500).send("Ошибка при запросе информации о продукте");
   }
+});
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3001;
