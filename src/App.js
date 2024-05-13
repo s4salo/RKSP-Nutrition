@@ -206,6 +206,7 @@ export class App extends React.Component {
           <Button onClick = {this.onProductNameSubmit}  
             size = "l"
             pin = "circle-circle"
+            id="search-button"
             >Найти продукт</Button>
 
         </div>
