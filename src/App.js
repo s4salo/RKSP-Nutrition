@@ -6,6 +6,25 @@ import './include/InputField.css'
 import { MakeTable } from "./include/MakeTable";
 import { Button, TextField } from '@salutejs/plasma-ui';
 
+
+
+//----------
+window.addEventListener('keydown', (event) => {
+  const inputField = document.getElementById('input-field');
+  const searchButton = document.getElementById('search-button');
+  switch(event.code) {
+    case 'ArrowDown':
+      // вниз
+      searchButton.focus();
+      break;
+     case 'ArrowUp':
+      // вверх
+      inputField.focus();
+      break;
+  }
+});
+//----------
+
 const initializeAssistant = (getState) => {
   if (process.env.NODE_ENV === "development") {
     console.log("Дев мод")
