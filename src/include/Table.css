@@ -3,20 +3,21 @@ table {
     font-weight: 500;
     font-style: normal;
     font-size: 32px;
-    width: 50%;
+    width: 80%;
     letter-spacing: -3.8;
     border-color:rgb(255, 255, 255);
   }
   
   th {
-    background: rgba(255, 255, 255, 0.2);
-    color: rgb(175, 182, 187);
+    background: rgba(255, 255, 255, 0.219);
+    color: rgb(211, 218, 219);
     padding: 10px 20px;
     text-align: center;
   }
     
     
   td {
-    background: rgba(12, 83, 52, 0.225);
+    background: rgba(65, 109, 89, 0.356);
     padding: 10px 20px;
   }
+  

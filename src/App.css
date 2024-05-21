@@ -1,9 +1,10 @@
 .App {
   text-align: center;
+  overflow-y: auto;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #2d4441;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -23,8 +24,20 @@
 }
 .m-auto {
   margin: 0 auto;
+  width: 90%;
 }
 
 .write-product::placeholder {
   opacity: 50%;
+}
+
+
+form {
+  margin-bottom: 20px;
+}
+
+#search-button, #Info {
+  font-size: calc(10px + 2vmin); /* Установите желаемый размер шрифта кнопки здесь */
+  font-family: 'Roboto' monospace; 
+  color: rgb(218, 225, 230);
 }
