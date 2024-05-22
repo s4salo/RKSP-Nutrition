@@ -2,8 +2,10 @@
 table {
     font-weight: 500;
     font-style: normal;
-    font-size: 32px;
-    width: 80%;
+    font-family: 'Roboto' monospace;
+    /*font-size: 32px;*/
+    font-size: calc(10px + 4vmin);
+    width: 50%;
     letter-spacing: -3.8;
     border-color:rgb(255, 255, 255);
   }
@@ -21,3 +23,4 @@ table {
     padding: 10px 20px;
   }
   
+
