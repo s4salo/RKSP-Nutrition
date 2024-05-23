@@ -208,9 +208,7 @@ export class App extends React.Component {
 
             >Найти продукт </Button>
           </div>
-
         </div>
-        <br></br>
         <div class="m-auto">
           <h2 id="Info">{information_string}</h2>
         </div>

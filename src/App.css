@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   overflow-y: auto;
+
 }
 
 .App-header {
@@ -12,6 +13,7 @@
   justify-content: center;
   font-size: calc(10px + 3vmin);
   color: rgb(224, 215, 215);
+
 }
 
 .App-link {
@@ -33,11 +35,24 @@
 }
 
 
-form {
+/* with Irina from love*/
+ form {
   margin-bottom: 20px;
+} 
+/* body {
+  padding-bottom: 30hv;
+} */
+
+#search-button{
+  font-size: calc(10px + 2vmin);
+  font-family: 'Roboto' monospace;
+  color: rgb(218, 225, 230);
+  font-weight: normal;
+  
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-#search-button, #Info {
+#Info {
   font-size: calc(10px + 3vmin);
   font-family: 'Roboto' monospace;
   color: rgb(218, 225, 230);
