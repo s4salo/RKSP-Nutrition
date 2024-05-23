@@ -1,5 +1,5 @@
 import React from "react";
-import {createAssistant, createSmartappDebugger,} from "@salutejs/client";
+import { createAssistant, createSmartappDebugger, } from "@salutejs/client";
 import axios from "axios";
 import './App.css'
 import './include/InputField.css'
@@ -12,12 +12,12 @@ import { Button, TextField } from '@salutejs/plasma-ui';
 window.addEventListener('keydown', (event) => {
   const inputField = document.getElementById('input-field');
   const searchButton = document.getElementById('search-button');
-  switch(event.code) {
+  switch (event.code) {
     case 'ArrowDown':
       // вниз
       searchButton.focus();
       break;
-     case 'ArrowUp':
+    case 'ArrowUp':
       // вверх
       inputField.focus();
       break;
@@ -34,7 +34,7 @@ const initializeAssistant = (getState) => {
       getState,
     });
   }
-  return createAssistant({getState});
+  return createAssistant({ getState });
 };
 
 export class App extends React.Component {
@@ -44,13 +44,13 @@ export class App extends React.Component {
 
     this.state = {
       productInfo: null,
-      productName: '', 
-      inputValue : '',
+      productName: '',
+      inputValue: '',
     };
 
     this.justOpened = true;
 
-    this.assistant = initializeAssistant(() => {});
+    this.assistant = initializeAssistant(() => { });
 
     this.assistant.on("data", (event/*: any*/) => {
       console.log(`assistant.on(data)`, event);
@@ -79,7 +79,7 @@ export class App extends React.Component {
       return "";
     }
   }
-    
+
 
 
   fetchProductInfo = async (productName) => {
@@ -87,9 +87,9 @@ export class App extends React.Component {
       const response = await axios.get(`http://45.67.57.139:3001/product-info/${productName}`);
       if (response.data && response.data.foods && response.data.foods.length > 0) {
         const productInfo = response.data.foods[0];
-        this.setState({ productInfo: productInfo});
+        this.setState({ productInfo: productInfo });
       }
-    } catch(error) {
+    } catch (error) {
       console.error('Ошибка запроса к серверу:', error);
     }
   };
@@ -109,15 +109,15 @@ export class App extends React.Component {
   }
   getStateForAssistant() {
     const state = {
-      productInfo: this.state.productInfo,      
+      productInfo: this.state.productInfo,
     };
-    return state;  
+    return state;
   }
 
-  onProductNameSubmit = async (event) =>{
+  onProductNameSubmit = async (event) => {
     event.preventDefault();
-    await this.setState({productName: this.state.inputValue.toLowerCase()});
-    
+    await this.setState({ productName: this.state.inputValue.toLowerCase() });
+
     const translatedProductName = await this.translateText(this.state.productName);
     console.log(translatedProductName);
 
@@ -133,20 +133,20 @@ export class App extends React.Component {
   }
 
   onProductNameChange = event => {
-    this.setState({inputValue: event.target.value.toLowerCase()});
+    this.setState({ inputValue: event.target.value.toLowerCase() });
   }
 
 
   // Функция поиска значения некоторой характеристики продукта
-  findValue = id =>{
+  findValue = id => {
     const len = this.state.productInfo.foodNutrients.length;
     const unitNameMap = {
-      "G" : "гр.",
+      "G": "гр.",
       "MG": "мг.",
       "KCAL": "ккал."
     }
-    for (let i = 0; i < len; i++){
-      if (this.state.productInfo.foodNutrients[i].nutrientId == id){
+    for (let i = 0; i < len; i++) {
+      if (this.state.productInfo.foodNutrients[i].nutrientId == id) {
         return [this.state.productInfo.foodNutrients[i].value, unitNameMap[this.state.productInfo.foodNutrients[i].unitName]];
       }
     }
@@ -169,16 +169,16 @@ export class App extends React.Component {
 
     let information_string = "Информация о продукте не найдена"
 
-    if (this.justOpened){
+    if (this.justOpened) {
       information_string = '';
     }
 
-    if (this.state.productInfo){
+    if (this.state.productInfo) {
       protein_ = this.findValue(nutrientIds.protein);
       fat_ = this.findValue(nutrientIds.fat);
       carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
       calories_ = this.findValue(nutrientIds.calories);
-      
+
 
       information_string = `Информация о продукте «${this.capitalizeName(this.state.productName)}»:`
       this.justOpened = false;
@@ -188,37 +188,37 @@ export class App extends React.Component {
       <div className="App">
         <div class="m-auto">
           <form onSubmit={this.onProductNameSubmit}>
-            
-            <input type="text" 
-            class="write-product" 
-            id="input-field" 
-            onChange={this.onProductNameChange}
-            pattern="[a-zA-Zа-яА-Я ]*" 
-            title="Допустимы только символы латиницы и кириллицы." 
-            placeholder="Наименование продукта">
 
-            </input>
-            {/* <Button onClick = {this.onProductNameSubmit}  
-            size = "l"
-            pin = "circle-circle"
-            >Боб</Button> */}
+            <input
+              type="text"
+              className="write-product"
+              id="input-field"
+              onChange={this.onProductNameChange}
+              pattern="[a-zA-Zа-яА-Я ]*"
+              title="Допустимы только символы латиницы и кириллицы."
+              placeholder="Название продукта"
+            />
           </form>
-          <Button onClick = {this.onProductNameSubmit}  
-            size = "l"
-            pin = "circle-circle"
-            id="search-button"
-            >Найти продукт</Button>
+          <div class="Button">
+            <Button onClick={this.onProductNameSubmit}
+              size="l"
+              pin="circle-circle"
+              id="search-button"
+              
+
+            >Найти продукт </Button>
+          </div>
 
         </div>
         <br></br>
         <div class="m-auto">
-          <h2>{information_string}</h2>
+          <h2 id="Info">{information_string}</h2>
         </div>
         <div class="m-auto">
           <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />
         </div>
       </div>
-      );
+    );
   }
 }
 
