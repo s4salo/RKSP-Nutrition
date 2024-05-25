@@ -195,7 +195,7 @@ export class App extends React.Component {
             onChange={this.onProductNameChange}
             pattern="[a-zA-Zа-яА-Я ]*" 
             title="Допустимы только символы латиницы и кириллицы." 
-            placeholder="Наименование продукта">
+            placeholder="Название">
 
             </input>
             {/* <Button onClick = {this.onProductNameSubmit}  
