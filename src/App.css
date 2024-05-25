@@ -1,16 +1,19 @@
 .App {
   text-align: center;
+  overflow-y: auto;
+
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #283432;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  font-size: calc(10px + 3vmin);
+  color: rgb(224, 215, 215);
+
 }
 
 .App-link {
@@ -23,8 +26,47 @@
 }
 .m-auto {
   margin: 0 auto;
+  width: 70%;
 }
 
 .write-product::placeholder {
   opacity: 50%;
+  font-size: calc(20px + 2vmin);
 }
+
+
+/* with Irina from love*/
+ form {
+  margin-bottom: 20px;
+} 
+/* body {
+  padding-bottom: 30hv;
+} */
+
+#search-button{
+  font-size: calc(10px + 2vmin);
+  font-family: 'Roboto' monospace;
+  color: rgb(218, 225, 230);
+  font-weight: normal;
+  
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+#Info {
+  font-size: calc(10px + 3vmin);
+  font-family: 'Roboto' monospace;
+  color: rgb(218, 225, 230);
+  font-weight: normal;
+}
+
+
+@media (max-width: 400px) {
+
+  .m-auto{
+    width: 80%;
+  }
+  #search-button, #Info{
+    font-size: calc(10px + 3vmin);
+  }
+}
+

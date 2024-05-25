@@ -2,21 +2,27 @@
 table {
     font-weight: 500;
     font-style: normal;
-    font-size: 32px;
+    font-family: 'Roboto' monospace;
+    font-size: calc(10px + 4vmin);
     width: 50%;
     letter-spacing: -3.8;
     border-color:rgb(255, 255, 255);
+
+    /* height: 50vh;
+    padding-bottom: 30vh; */
   }
   
   th {
-    background: rgba(255, 255, 255, 0.2);
-    color: rgb(175, 182, 187);
+    background: rgba(255, 255, 255, 0.219);
+    color: rgb(211, 218, 219);
     padding: 10px 20px;
     text-align: center;
   }
     
     
   td {
-    background: rgba(12, 83, 52, 0.225);
+    background: rgba(65, 109, 89, 0.356);
     padding: 10px 20px;
   }
+  
+
