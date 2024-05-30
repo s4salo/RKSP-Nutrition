@@ -72,7 +72,7 @@ export class App extends React.Component {
 
   async translateText(text) {
     try {
-      const response = await axios.post('http://45.67.57.139:3001/translate', { text });
+      const response = await axios.post('http://localhost:3001/translate', { text });
       return response.data.translatedText;
     } catch (error) {
       console.error("Ошибка при переводе:", error);
@@ -84,13 +84,16 @@ export class App extends React.Component {
 
   fetchProductInfo = async (productName) => {
     try {
-      const response = await axios.get(`http://45.67.57.139:3001/product-info/${productName}`);
+      const response = await axios.get(`http://localhost:3001/product-info/${productName}`);
       if (response.data && response.data.foods && response.data.foods.length > 0) {
         const productInfo = response.data.foods[0];
-        this.setState({ productInfo: productInfo });
+        this.setState({ productInfo: productInfo, infoNotFound: false });
+      } else {
+        this.setState({ productInfo: null, infoNotFound: true });
       }
     } catch (error) {
       console.error('Ошибка запроса к серверу:', error);
+      this.setState({ productInfo: null, infoNotFound: true });
     }
   };
 
@@ -167,22 +170,26 @@ export class App extends React.Component {
     let carbohydrates_ = ['-', ''];
     let calories_ = ['-', ''];
 
-    let information_string = "Информация о продукте не найдена"
+    let information_string = "Информация о продукте не найдена";
 
     if (this.justOpened) {
       information_string = '';
     }
 
-    if (this.state.productInfo) {
+    if (this.state.infoNotFound) {
+      information_string = "Информация о продукте не найдена";
+    } else if (!this.state.productInfo && !this.justOpened) {
+      information_string = "Введите запрос для поиска";
+    } else if (this.state.productInfo) {
       protein_ = this.findValue(nutrientIds.protein);
       fat_ = this.findValue(nutrientIds.fat);
       carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
       calories_ = this.findValue(nutrientIds.calories);
-
-
-      information_string = `Информация о продукте «${this.capitalizeName(this.state.productName)}»:`
+    
+      information_string = `Информация о продукте «${this.capitalizeName(this.state.productName)}»:`;
       this.justOpened = false;
     }
+  
 
     return (
       <div className="App">
@@ -209,12 +216,14 @@ export class App extends React.Component {
             >Найти продукт </Button>
           </div>
         </div>
-        <div class="m-auto">
-          <h2 id="Info">{information_string}</h2>
-        </div>
-        <div class="m-auto">
+        <div className="m-auto">
+        <h2 id="Info">{information_string}</h2>
+      </div>
+      <div className="m-auto">
+        {(this.state.productInfo || this.justOpened) &&
           <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />
-        </div>
+        }
+      </div>
       </div>
     );
   }
