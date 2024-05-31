@@ -3,23 +3,23 @@
     color: rgba(255, 255, 255);
   }
   
-  .write-product,
-  .product-item {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 16px 32px;
-    font-weight: 500;
-    font-style: normal;
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -3.8;
-    color: #ffffff;
-  }
-  
-  .write-product {
-    margin-top: 48px;
-    width: 50%;
-    height: 75px;
-    outline: none;
-    border-radius: 64px;
-    border-color: #ffffff;
-  }
+.write-product,
+.product-item {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 16px 32px;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -3.8;
+  color: #ffffff;
+}
+
+.write-product {
+  margin-top: 48px;
+  width: 50%;
+  height: 75px;
+  outline: none;
+  border-radius: 64px;
+  border-color: #ffffff;
+}

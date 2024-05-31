@@ -3,7 +3,7 @@ table {
     font-weight: 500;
     font-style: normal;
     font-family: 'Roboto' monospace;
-    font-size: calc(10px + 4vmin);
+    font-size: calc(4vmin);
     width: 50%;
     letter-spacing: -3.8;
     border-color:rgb(255, 255, 255);
