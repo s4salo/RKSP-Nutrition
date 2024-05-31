@@ -45,7 +45,7 @@ app.post('/translate', async (req, res) => {
 app.get('/product-info/:productName', async (req, res) => {
   const {productName} = req.params;
   try {
-    const response = await axios.get(`https://api.nal.usda.gov/fdc/v1/foods/search?query=${productName}&api_key=g0QVXoejPe9WgYlsVx7UgA3ZAbtZhdrn9HAhC6wb`);
+    const response = await axios.get(`https://api.nal.usda.gov/fdc/v1/foods/search?query=${productName}&type=Foundation&api_key=g0QVXoejPe9WgYlsVx7UgA3ZAbtZhdrn9HAhC6wb`);
     res.json(response.data);
   } catch (error) {
     console.error(error);
