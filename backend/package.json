@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js",
-    "build": "cd ../frontend && npm run build"
+    "start": "node ./index.js"
   },
-  "proxy": "http://45.67.57.139:3001",
+  "proxy": "https://nutritiapp.ru",
   "keywords": [],
   "author": "",
   "license": "ISC",

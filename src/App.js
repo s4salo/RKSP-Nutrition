@@ -65,7 +65,7 @@ export class App extends React.Component {
 
   async translateText(text) {
     try {
-      const response = await axios.post('http://45.67.57.139:3001/translate', { text });
+      const response = await axios.post('https://nutritiapp.ru/translate', { text });
       return response.data.translatedText;
     } catch (error) {
       console.error("Ошибка при переводе:", error);
@@ -75,7 +75,7 @@ export class App extends React.Component {
 
   fetchProductInfo = async (productName) => {
     try {
-      const response = await axios.get(`http://45.67.57.139:3001/product-info/${productName}`);
+      const response = await axios.get(`https://nutritiapp.ru/product-info/${productName}`);
       if (response.data && response.data.foods) {
         const lowerCaseProductName = productName.toLowerCase();
         let productInfo = response.data.foods.find(food => 
