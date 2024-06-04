@@ -16,6 +16,11 @@ window.addEventListener('keydown', (event) => {
     case 'ArrowUp':
       inputField.focus();
       break;
+    case 'Enter':
+      if (document.activeElement === searchButton) {
+        searchButton.click();
+      }
+      break;
   }
 });
 
