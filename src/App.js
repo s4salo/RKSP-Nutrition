@@ -79,40 +79,67 @@ export class App extends React.Component {
 
   fetchProductInfo = async (productName) => {
     try {
-      const response = await axios.get(`https://nutritiapp.ru/product-info/${productName}`);
-      if (response.data && response.data.foods) {
-        this.setState({ inputValue: ''} )
-        this.setState({ justOpened: false})
-        const lowerCaseProductName = productName.toLowerCase();
-        let productInfo = response.data.foods.find(food => 
-          food.description.toLowerCase().includes(lowerCaseProductName) && food.dataType === 'Branded'
-        );
-        
-        if (!productInfo || !this.hasCompleteNutritionData(productInfo)) {
-          productInfo = response.data.foods.find(food => 
-            food.description.toLowerCase().includes(lowerCaseProductName) && food.dataType === 'Foundation'
-          );
-        }
+      const lowerCaseProductName = productName.toLowerCase();
+      let response = await axios.get(`https://nutritiapp.ru/product-info-foundation/${productName}`);
+  
+      if (response.data) {
+        let productInfo = this.findProductInfo(response.data.foods, lowerCaseProductName);
   
         if (productInfo) {
-          this.setState({ productInfo: productInfo, infoNotFound: false });
-        } else {
-          this.setState({ productInfo: null, infoNotFound: true });
+          this.setState({
+            productInfo: productInfo,
+            infoNotFound: false,
+            inputValue: '',
+            justOpened: false
+          });
+          return;
         }
-      } else {
-        this.setState({ inputValue: ''} )
-        this.setState({ justOpened: false})
-        this.setState({ productInfo: null, infoNotFound: true });
       }
+  
+      response = await axios.get(`https://nutritiapp.ru/product-info-branded/${productName}`);
+  
+      if (response.data) {
+        let productInfo = this.findProductInfo(response.data.foods, lowerCaseProductName);
+  
+        if (productInfo) {
+          this.setState({
+            productInfo: productInfo,
+            infoNotFound: false,
+            inputValue: '',
+            justOpened: false
+          });
+          return;
+        }
+      }
+  
+      this.setState({
+        productInfo: null,
+        infoNotFound: true,
+        inputValue: '',
+        justOpened: false
+      });
     } catch (error) {
       console.error('Ошибка запроса к серверу:', error);
-      this.setState({ productInfo: null, infoNotFound: true });
+      this.setState({
+        productInfo: null,
+        infoNotFound: true,
+        inputValue: '',
+        justOpened: false
+      });
     }
+  };
+  
+  findProductInfo = (foods, lowerCaseProductName) => {
+    return foods.find(food => {
+      const lowerCaseDescription = food.description.toLowerCase();
+      const searchWords = lowerCaseProductName.split(' ');
+      return searchWords.every(word => lowerCaseDescription.includes(word));
+    });
   };
 
   hasCompleteNutritionData(productInfo) {
     const requiredNutrients = [1003, 1004, 1005, 1008]; // IDs для белков, жиров, углеводов и калорий
-    return requiredNutrients.every(id => this.findNutrientValue(productInfo, id) !== '-');
+    return requiredNutrients.some(id => this.findNutrientValue(productInfo, id) !== '-');
   }
 
   findNutrientValue(productInfo, id) {
@@ -121,7 +148,7 @@ export class App extends React.Component {
         "MG": "мг.",
         "KCAL": "ккал."
     };
-    const nutrient = productInfo.foodNutrients.find(nutrient => nutrient.nutrientId === id);
+    const nutrient = productInfo.foodNutrients.find(nutrient => nutrient.nutrientId == id);
     if (nutrient && nutrient.value != null) {
         return [`${nutrient.value.toFixed(1)}`, unitNameMap[nutrient.unitName] || ''];
     }
