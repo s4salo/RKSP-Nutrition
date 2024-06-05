@@ -39,16 +39,15 @@ const initializeAssistant = (getState) => {
 export class App extends React.Component {
   constructor(props) {
     super(props);
-    console.log('constructor');
 
     this.state = {
       infoNotFound: true,
       productInfo: null,
       productName: '',
       inputValue: '',
+      justOpened: true      
     };
 
-    this.justOpened = true;
     this.assistant = initializeAssistant(() => { });
 
     this.assistant.on("data", (event) => {
@@ -82,6 +81,8 @@ export class App extends React.Component {
     try {
       const response = await axios.get(`https://nutritiapp.ru/product-info/${productName}`);
       if (response.data && response.data.foods) {
+        this.setState({ inputValue: ''} )
+        this.setState({ justOpened: false})
         const lowerCaseProductName = productName.toLowerCase();
         let productInfo = response.data.foods.find(food => 
           food.description.toLowerCase().includes(lowerCaseProductName) && food.dataType === 'Branded'
@@ -99,6 +100,8 @@ export class App extends React.Component {
           this.setState({ productInfo: null, infoNotFound: true });
         }
       } else {
+        this.setState({ inputValue: ''} )
+        this.setState({ justOpened: false})
         this.setState({ productInfo: null, infoNotFound: true });
       }
     } catch (error) {
@@ -114,12 +117,15 @@ export class App extends React.Component {
 
   findNutrientValue(productInfo, id) {
     const unitNameMap = {
-      "G": "гр.",
-      "MG": "мг.",
-      "KCAL": "ккал."
+        "G": "г.",
+        "MG": "мг.",
+        "KCAL": "ккал."
     };
     const nutrient = productInfo.foodNutrients.find(nutrient => nutrient.nutrientId === id);
-    return nutrient ? [nutrient.value, unitNameMap[nutrient.unitName]] : '-';
+    if (nutrient && nutrient.value != null) {
+        return [`${nutrient.value.toFixed(1)}`, unitNameMap[nutrient.unitName] || ''];
+    }
+    return ['-', ''];
   }
 
   async dispatchAssistantAction(action) {
@@ -142,10 +148,9 @@ export class App extends React.Component {
   onProductNameSubmit = async (event) => {
     event.preventDefault();
     await this.setState({ productName: this.state.inputValue.toLowerCase() });
-
+    await this.setState({ inputValue: ''} )
     const translatedProductName = await this.translateText(this.state.productName);
     console.log(translatedProductName);
-
     this.fetchProductInfo(translatedProductName);
   }
 
@@ -162,15 +167,7 @@ export class App extends React.Component {
   }
 
   findValue = id => {
-    if (!this.state.productInfo) return ['-', ''];
-
-    const nutrient = this.state.productInfo.foodNutrients.find(nutrient => nutrient.nutrientId == id);
-    const unitNameMap = {
-      "G": "гр.",
-      "MG": "мг.",
-      "KCAL": "ккал."
-    };
-    return nutrient ? [nutrient.value, unitNameMap[nutrient.unitName]] : ['-', ''];
+    return this.findNutrientValue(this.state.productInfo, id);
   }
 
   render() {
@@ -186,29 +183,26 @@ export class App extends React.Component {
     let carbohydrates_ = ['-', ''];
     let calories_ = ['-', ''];
 
-    let information_string = "Информация о продукте не найдена";
-
-    if (this.justOpened) {
-      information_string = "";
-    }
-
     const hasNutritionData = this.state.productInfo &&
-      this.findValue(nutrientIds.protein)[0] !== '-' &&
-      this.findValue(nutrientIds.fat)[0] !== '-' &&
-      this.findValue(nutrientIds.carbohydrates)[0] !== '-' &&
-      this.findValue(nutrientIds.calories)[0] !== '-';
+      this.findValue(nutrientIds.protein) !== '-' &&
+      this.findValue(nutrientIds.fat) !== '-' &&
+      this.findValue(nutrientIds.carbohydrates) !== '-' &&
+      this.findValue(nutrientIds.calories) !== '-';
 
-    if (this.state.infoNotFound && !this.justOpened) {
-      information_string = "Информация о продукте не найдена";
-    } else if (this.state.productInfo && hasNutritionData) {
-      protein_ = this.findValue(nutrientIds.protein);
-      fat_ = this.findValue(nutrientIds.fat);
-      carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
-      calories_ = this.findValue(nutrientIds.calories);
-
-      information_string = `Информация про «${this.capitalizeName(this.state.productName)}» на 100г:`;
-      this.justOpened = false;
+    let information_string = "";
+    if (!this.state.justOpened) {
+      if (this.state.infoNotFound) {
+        information_string = "Информация о продукте не найдена";
+      } else if (this.state.productInfo && hasNutritionData) {
+        protein_ = this.findValue(nutrientIds.protein);
+        fat_ = this.findValue(nutrientIds.fat);
+        carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
+        calories_ = this.findValue(nutrientIds.calories);
+    
+        information_string = `Информация про «${this.capitalizeName(this.state.productName)}» на 100г:`;
+      }
     }
+      
 
     return (
       <div className="App">
@@ -222,6 +216,7 @@ export class App extends React.Component {
               pattern="[a-zA-Zа-яА-Я ]*"
               title="Допустимы только символы латиницы и кириллицы."
               placeholder="Продукт"
+              value={this.state.inputValue}
             />
           </form>
           <div className="Button">
@@ -236,7 +231,7 @@ export class App extends React.Component {
           <h2 id="Info">{information_string}</h2>
         </div>
         <div className="m-auto">
-          {(hasNutritionData || this.justOpened) && 
+          {(hasNutritionData || this.state.justOpened) && 
             <MakeTable protein={protein_} fat={fat_} carbohydrates={carbohydrates_} calories={calories_} />
           }
         </div>
