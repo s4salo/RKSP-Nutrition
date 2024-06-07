@@ -80,11 +80,12 @@ export class App extends React.Component {
   fetchProductInfo = async (productName) => {
     try {
       const lowerCaseProductName = productName.toLowerCase();
-      let response = await axios.get(`https://nutritiapp.ru/product-info-foundation/${productName}`);
+      let response = await axios.get(`https://nutritiapp.ru/product-info-foundation/+${productName} +(raw still fresh)`);
   
       if (response.data) {
         let productInfo = this.findProductInfo(response.data.foods, lowerCaseProductName);
-  
+        //console.log(JSON.stringify(productInfo,null,2))
+
         if (productInfo) {
           this.setState({
             productInfo: productInfo,
@@ -96,10 +97,11 @@ export class App extends React.Component {
         }
       }
   
-      response = await axios.get(`https://nutritiapp.ru/product-info-branded/${productName}`);
+      response = await axios.get(`https://nutritiapp.ru/product-info-branded/+${productName} +(raw still fresh)`);
   
       if (response.data) {
         let productInfo = this.findProductInfo(response.data.foods, lowerCaseProductName);
+        //console.log(JSON.stringify(productInfo,null,2))
   
         if (productInfo) {
           this.setState({
@@ -139,7 +141,7 @@ export class App extends React.Component {
 
   hasCompleteNutritionData(productInfo) {
     const requiredNutrients = [1003, 1004, 1005, 1008]; // IDs для белков, жиров, углеводов и калорий
-    return requiredNutrients.some(id => this.findNutrientValue(productInfo, id) !== '-');
+    return requiredNutrients.some(id => this.findNutrientValue(productInfo, id) != '-');
   }
 
   findNutrientValue(productInfo, id) {
@@ -148,7 +150,7 @@ export class App extends React.Component {
         "MG": "мг.",
         "KCAL": "ккал."
     };
-    const nutrient = productInfo.foodNutrients.find(nutrient => nutrient.nutrientId == id);
+    const nutrient = productInfo.foodNutrients.find(nutrient => nutrient.nutrientId == id);    
     if (nutrient && nutrient.value != null) {
         return [`${nutrient.value.toFixed(1)}`, unitNameMap[nutrient.unitName] || ''];
     }
@@ -161,7 +163,7 @@ export class App extends React.Component {
 
   async queryBackend(productName) {
     const productNameEn = await this.translateText(productName);
-    console.log('productNameEn:', productNameEn);
+    //console.log('productNameEn:', productNameEn);
     this.fetchProductInfo(productNameEn);
   }
 
@@ -177,16 +179,17 @@ export class App extends React.Component {
     await this.setState({ productName: this.state.inputValue.toLowerCase() });
     await this.setState({ inputValue: ''} )
     const translatedProductName = await this.translateText(this.state.productName);
-    console.log(translatedProductName);
+    //console.log(translatedProductName);
     this.fetchProductInfo(translatedProductName);
   }
 
   capitalizeName = (text) => {
     const temp = text.split(" ");
     for (let i = 0; i < temp.length; i++) {
-      temp[i] = temp[i][0].toUpperCase() + temp[i].substring(1);
+      temp[i] = temp[i][0] + temp[i].substring(1);
     }
-    return temp.join(" ");
+    if (temp.join(" ") != 'undefined') {return temp.join(" ");}
+    return '';
   }
 
   onProductNameChange = event => {
@@ -220,13 +223,20 @@ export class App extends React.Component {
     if (!this.state.justOpened) {
       if (this.state.infoNotFound) {
         information_string = "Информация о продукте не найдена";
-      } else if (this.state.productInfo && hasNutritionData) {
+      } else if (this.state.productInfo && hasNutritionData && this.capitalizeName(this.state.productName) != '') {
         protein_ = this.findValue(nutrientIds.protein);
         fat_ = this.findValue(nutrientIds.fat);
         carbohydrates_ = this.findValue(nutrientIds.carbohydrates);
         calories_ = this.findValue(nutrientIds.calories);
-    
-        information_string = `Информация про «${this.capitalizeName(this.state.productName)}» на 100г:`;
+
+        //console.log("белки", protein_,"жиры", fat_,"УГЛЕВОДЫ", carbohydrates_,"калории", calories_)
+
+        if (this.capitalizeName(this.state.productName) != '') {
+          information_string = `Информация про «${this.capitalizeName(this.state.productName)}» на 100г:`
+        } else {
+          information_string = '';
+        }   
+        
       }
     }
       
